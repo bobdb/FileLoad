@@ -6,6 +6,8 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class FileLoad {
 
@@ -99,12 +101,26 @@ public class FileLoad {
                 }
                 break;
             case JSON:
+                List<List<String>> list1 = new ArrayList<>();
+                List<List<String>> list2 = new ArrayList<>();
                 lines = string.split("\\n");
+                Pattern pattern = Pattern.compile("'([^:,]+)'\\s*:\\s*'([^:,]+)'");
                 for (String line : lines) {
-                    List<String> tmp = new ArrayList<>();
-                    tmp.add(line);
-                    list.add(tmp);
+                    List<String> keys = new ArrayList<>();
+                    List<String> values = new ArrayList<>();
+                    Matcher matcher = pattern.matcher(line);
+                    while (matcher.find()) {
+                        keys.add(matcher.group(1));
+                        values.add(matcher.group(2));
+                    }
+                    list1.add(keys);
+                    list2.add(values);
+
                 }
+                System.out.println(list1);
+                System.out.println(list2);
+                break;
+            case INLINE:
                 break;
             case TXT:
             default:
@@ -117,9 +133,10 @@ public class FileLoad {
                         tmp.add(w);
                     list.add(tmp);
                 }
+                System.out.println(list);
                 break;
         }
-        System.out.println(list);
+
     }
 
     private static void process(String s, FileType type) {
