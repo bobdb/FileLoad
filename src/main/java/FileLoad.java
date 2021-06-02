@@ -115,10 +115,9 @@ public class FileLoad {
                     }
                     list1.add(keys);
                     list2.add(values);
-
+                    list.add(keys);
+                    list.add(values);
                 }
-                System.out.println(list1);
-                System.out.println(list2);
                 break;
             case INLINE:
                 break;
