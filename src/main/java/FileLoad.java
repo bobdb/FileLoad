@@ -1,17 +1,20 @@
 import org.apache.commons.cli.*;
 
+import java.io.BufferedReader;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.sql.Timestamp;
 import java.text.DateFormat;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Locale;
+import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class FileLoad {
 
-    private enum FileType {TXT, CSV, JSON, INLINE};
+    private enum FileType {TXT, CSV, JSON, INLINE}
 
     public static void main(String[] args) {
 
@@ -92,11 +95,8 @@ public class FileLoad {
             case CSV:
                 lines = string.split("\\n");
                 for (String line : lines) {
-
                     String[] words = line.split(",");
-                    List<String> tmp = new ArrayList<>();
-                    for(String w : words)
-                        tmp.add(w);
+                    List<String> tmp = new ArrayList<>(Arrays.asList(words));
                     list.add(tmp);
                 }
                 break;
@@ -124,26 +124,21 @@ public class FileLoad {
                 break;
             case TXT:
             default:
-
                 lines = string.split("\\n");
                 for (String line : lines) {
                     String[] words = line.split(" ");
-                    List<String> tmp = new ArrayList<>();
-                    for(String w : words)
-                        tmp.add(w);
+                    List<String> tmp = new ArrayList<>(Arrays.asList(words));
                     list.add(tmp);
                 }
-                System.out.println(list);
                 break;
         }
 
     }
 
     private static void process(String s, FileType type) {
-        List<List<String>> list = null;
+        List<List<String>> list = new ArrayList<>();
         switch (type) {
             case INLINE:
-                list = null;
                 break;
             case CSV:
                 list = loadFromCsv(s);
@@ -155,10 +150,10 @@ public class FileLoad {
                 list = loadFromJson(s);
                 break;
             default:
-                list = null;
                 break;
         }
-        System.out.println("done.");
+        System.out.println(list);
+        System.out.println("done");
 
     }
 
@@ -167,7 +162,21 @@ public class FileLoad {
     }
 
     private static List<List<String>> loadFromTxt(String s) {
-        return null;
+        List<List<String>> result = new ArrayList<>();
+        try {
+            List<String> allLines = Files.readAllLines(Paths.get(s));
+            for (String line : allLines) {
+                if (!line.isEmpty()) {
+                    List<String> tmp = new ArrayList<>();
+                    tmp.add(line);
+                    result.add(tmp);
+                }
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        return result;
     }
 
     private static List<List<String>> loadFromCsv(String s) {

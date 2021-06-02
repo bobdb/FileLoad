@@ -1,1 +1,2 @@
-hello,goodbye,123
+hello,goodbye,123,2.134
+ola,adios,543,3.14
