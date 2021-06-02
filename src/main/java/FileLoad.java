@@ -132,6 +132,7 @@ public class FileLoad {
                 }
                 break;
         }
+        System.out.println(list);
 
     }
 
